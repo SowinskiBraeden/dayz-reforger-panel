@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../api";
 import GuildConfigPanel from "../components/GuildConfigPanel";
+import type { NitradoUser } from "../types/nitrado";
+import NitradoLinker from "../components/NitradoAccount";
+import Sidebar from "../components/Sidebar";
 
 interface Guild {
   id: string;
@@ -8,82 +11,12 @@ interface Guild {
   icon: string | null;
 }
 
-interface NitradoUser {
-  user_id: string;
-  email: string;
-  country: string;
-}
-
-interface User {
-  username: string;
-  nitrado?: NitradoUser | null;
-}
-
-function NitradoLinker({
-  user,
-  refreshUser,
-}: {
-  user: User;
-  refreshUser: () => void;
-}) {
-  const linked = !!user?.nitrado;
-
-  const handleLinkClick = () => {
-    const jwt = localStorage.getItem("jwt");
-    if (!jwt) return;
-    window.location.href = `${import.meta.env.VITE_API_URL}/auth/nitrado/login?user_token=${encodeURIComponent(jwt)}`;
-  };
-
-  const handleUnlinkClick = async () => {
-    if (!confirm("Are you sure you want to unlink your Nitrado account?"))
-      return;
-    await api.post("/api/nitrado/unlink");
-    refreshUser();
-  };
-
-  return (
-    <div style={{ padding: "20px" }}>
-      <h2>Nitrado Account</h2>
-
-      {linked ? (
-        <div
-          style={{
-            border: "1px solid #333",
-            padding: "15px",
-            borderRadius: "8px",
-          }}
-        >
-          <p>Your Nitrado account is linked</p>
-          <p>
-            <strong>User ID:</strong> {user.nitrado?.user_id}
-          </p>
-          <p>
-            <strong>Email:</strong> {user.nitrado?.email}
-          </p>
-          <button onClick={handleUnlinkClick}>Unlink Account</button>
-        </div>
-      ) : (
-        <div
-          style={{
-            border: "1px solid #555",
-            padding: "15px",
-            borderRadius: "8px",
-          }}
-        >
-          <p>No Nitrado account linked</p>
-          <button onClick={handleLinkClick}>Link Nitrado Account</button>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function Dashboard() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<NitradoUser | null>(null);
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [loadingGuilds, setLoadingGuilds] = useState(true);
   const [selectedGuild, setSelectedGuild] = useState<string | null>(null);
-  const [config, setConfig] = useState<any>(null);
+  const [config, setConfig] = useState<null>(null);
   const [showLinkedMsg, setShowLinkedMsg] = useState(false);
 
   const fetchUser = async () => {
@@ -122,7 +55,6 @@ export default function Dashboard() {
     }
   };
 
-  // ✅ fade out success banner after 5 seconds
   useEffect(() => {
     if (showLinkedMsg) {
       const timer = setTimeout(() => setShowLinkedMsg(false), 5000);
@@ -132,7 +64,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, []); // react at its finest, this empty array is required otherwise, api gets spammed, we get rate limited, and connect access the dashboard
 
   const handleSelectGuild = (guildID: string) => {
     setSelectedGuild(guildID);
@@ -155,90 +87,94 @@ export default function Dashboard() {
       : "https://cdn.discordapp.com/embed/avatars/0.png";
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Welcome, {user.username}</h1>
-      <button onClick={handleLogout}>Logout</button>
+    <div>
+      <Sidebar />
+      <div style={{ marginLeft: "200px", padding: "24pt" }}>
+        <h1>Welcome, {user.username}</h1>
+        <button onClick={handleLogout}>Logout</button>
 
-      {/* ✅ success banner */}
-      {showLinkedMsg && (
-        <div
-          style={{
-            backgroundColor: "#2ecc71",
-            color: "black",
-            padding: "10px 20px",
-            borderRadius: "8px",
-            marginTop: "20px",
-            marginBottom: "20px",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-            transition: "opacity 0.5s ease",
-            opacity: showLinkedMsg ? 1 : 0,
-          }}
-        >
-          Successfully linked your Nitrado account!
-        </div>
-      )}
+        {showLinkedMsg && (
+          <div
+            style={{
+              backgroundColor: "#2ecc71",
+              color: "black",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              marginTop: "20px",
+              marginBottom: "20px",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+              transition: "opacity 0.5s ease",
+              opacity: showLinkedMsg ? 1 : 0,
+            }}
+          >
+            Successfully linked your Nitrado account!
+          </div>
+        )}
 
-      {/* Pass refreshUser to re-fetch data after link/unlink */}
-      <NitradoLinker user={user} refreshUser={fetchUser} />
+        {/* Pass refreshUser to re-fetch data after link/unlink */}
+        <NitradoLinker user={user} refreshUser={fetchUser} />
 
-      <hr style={{ margin: "20px 0" }} />
+        <hr style={{ margin: "20px 0" }} />
 
-      <h2>Your Servers</h2>
+        <h2>Your Servers</h2>
 
-      {loadingGuilds ? (
-        <p style={{ color: "#888" }}>Fetching your servers...</p>
-      ) : guilds.length === 0 ? (
-        <p>No servers found.</p>
-      ) : (
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-            gap: "20px",
-            marginTop: "20px",
-          }}
-        >
-          {guilds.map((g) => (
-            <div
-              key={g.id}
-              onClick={() => handleSelectGuild(g.id)}
-              style={{
-                cursor: "pointer",
-                backgroundColor:
-                  selectedGuild === g.id ? "#2f3136" : "rgba(255,255,255,0.05)",
-                padding: "15px",
-                borderRadius: "10px",
-                textAlign: "center",
-                transition: "0.2s",
-              }}
-            >
-              <img
-                src={getIconUrl(g)}
-                alt={g.name}
+        {loadingGuilds ? (
+          <p style={{ color: "#888" }}>Fetching your servers...</p>
+        ) : guilds.length === 0 ? (
+          <p>No servers found.</p>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+              gap: "20px",
+              marginTop: "20px",
+            }}
+          >
+            {guilds.map((g) => (
+              <div
+                key={g.id}
+                onClick={() => handleSelectGuild(g.id)}
                 style={{
-                  width: "64px",
-                  height: "64px",
-                  borderRadius: "50%",
-                  marginBottom: "10px",
-                  objectFit: "cover",
+                  cursor: "pointer",
+                  backgroundColor:
+                    selectedGuild === g.id
+                      ? "#2f3136"
+                      : "rgba(255,255,255,0.05)",
+                  padding: "15px",
+                  borderRadius: "10px",
+                  textAlign: "center",
+                  transition: "0.2s",
                 }}
-              />
-              <div style={{ fontWeight: "bold" }}>{g.name}</div>
-            </div>
-          ))}
-        </div>
-      )}
+              >
+                <img
+                  src={getIconUrl(g)}
+                  alt={g.name}
+                  style={{
+                    width: "64px",
+                    height: "64px",
+                    borderRadius: "50%",
+                    marginBottom: "10px",
+                    objectFit: "cover",
+                  }}
+                />
+                <div style={{ fontWeight: "bold" }}>{g.name}</div>
+              </div>
+            ))}
+          </div>
+        )}
 
-      {selectedGuild && (
-        <div style={{ marginTop: "30px" }}>
-          <h3>Guild Config: {selectedGuild}</h3>
-          {config ? (
-            <GuildConfigPanel guildConfig={config} />
-          ) : (
-            <p>No config found for this guild.</p>
-          )}
-        </div>
-      )}
+        {selectedGuild && (
+          <div style={{ marginTop: "30px" }}>
+            <h3>Guild Config: {selectedGuild}</h3>
+            {config ? (
+              <GuildConfigPanel guildConfig={config} />
+            ) : (
+              <p>No config found for this guild.</p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

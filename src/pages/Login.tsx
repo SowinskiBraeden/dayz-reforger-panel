@@ -16,8 +16,16 @@ export default function Login() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "25vh" }}>
-      <h1>Novus DayZ Admin Panel</h1>
+    <div
+      style={{
+        textAlign: "center",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
+    >
+      <h1>Login to DayZ Reforger via Discord</h1>
       <button
         onClick={handleLogin}
         style={{

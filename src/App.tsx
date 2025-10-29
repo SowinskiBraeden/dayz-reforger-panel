@@ -8,7 +8,6 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />{" "}
-        {/* must match backend redirect */}
         <Route
           path="/dashboard"
           element={
@@ -18,7 +17,6 @@ export default function App() {
           }
         />
         <Route path="/" element={<Navigate to="/login" />} />{" "}
-        {/* default route */}
       </Routes>
     </BrowserRouter>
   );
