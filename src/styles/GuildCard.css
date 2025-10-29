@@ -1,0 +1,77 @@
+.guild-card {
+    background-color: #1a1b1e;
+    border: 2px solid #2a2b2f;
+    border-radius: 12px;
+    padding: 16px;
+    width: 300px;
+    height: 150px;
+    color: #fff;
+    font-family: system-ui, sans-serif;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.guild-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.guild-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1px solid #333;
+    object-fit: cover;
+    background-color: #1c1c1c;
+}
+
+.guild-icon.placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.guild-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.guild-name {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.guild-status {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 8px;
+    border: 1px solid #2a2b2f;
+    margin-top: 4px;
+    display: inline-block;
+    text-transform: capitalize;
+    font-weight: 600;
+    width: 50px;
+}
+
+.guild-status.unlinked {
+    background-color: #2a2b2f;
+    color: white;
+}
+
+.guild-status.linked {
+    background-color: rgba(0, 80, 0, 0.3);
+    border-color: #004400;
+    color: #a0f5a0;
+}
+
+.guild-warning {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #f2c744;
+    font-size: 0.85rem;
+    margin-top: 24pt;
+}

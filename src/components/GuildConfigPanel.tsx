@@ -14,7 +14,6 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         {server.serverName || "Unnamed Server"} Configuration
       </h2>
 
-      {/* ---------- Server Basics ---------- */}
       <Section title="General Settings">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField label="Server Name" value={server.serverName} />
@@ -31,7 +30,6 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         </div>
       </Section>
 
-      {/* ---------- Purchasable Options ---------- */}
       <Section title="Purchasable Features">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <SwitchField label="Purchase UAV" value={server.purchaseUAV} />
@@ -41,7 +39,6 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         </div>
       </Section>
 
-      {/* ---------- Channels ---------- */}
       <Section title="Channels">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <SelectField
@@ -67,7 +64,6 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         </div>
       </Section>
 
-      {/* ---------- Economy ---------- */}
       <Section title="Economy">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField
@@ -83,7 +79,6 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         </div>
       </Section>
 
-      {/* ---------- Roles ---------- */}
       <Section title="Roles">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField
@@ -95,7 +90,6 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         </div>
       </Section>
 
-      {/* ---------- Combat & Timing ---------- */}
       <Section title="Combat & Timers">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField
@@ -106,7 +100,6 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         </div>
       </Section>
 
-      {/* ---------- Nitrado ---------- */}
       <Section title="Nitrado Info">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField label="Server ID" value={nitrado.ServerID} disabled />
@@ -119,7 +112,6 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
   );
 }
 
-/* ---------- Shared Section Wrapper ---------- */
 const Section = ({ title, children }: any) => (
   <section>
     <h3 className="text-lg font-semibold mb-2 border-b border-neutral-600 pb-1">
@@ -128,8 +120,6 @@ const Section = ({ title, children }: any) => (
     {children}
   </section>
 );
-
-/* ---------- Reusable Input Components ---------- */
 
 const InputField = ({ label, value, type = "text", disabled = false }: any) => (
   <div className="flex flex-col">
@@ -145,7 +135,6 @@ const InputField = ({ label, value, type = "text", disabled = false }: any) => (
   </div>
 );
 
-/* ---------- Beautiful On/Off Switch ---------- */
 const SwitchField = ({ label, value }: any) => (
   <div className="flex items-center justify-between bg-neutral-700 px-4 py-3 rounded-lg shadow-sm">
     <span className="text-sm">{label}</span>
@@ -163,7 +152,6 @@ const SwitchField = ({ label, value }: any) => (
   </div>
 );
 
-/* ---------- Select Dropdown ---------- */
 const SelectField = ({ label, value, options }: any) => (
   <div className="flex flex-col">
     <label className="text-sm text-gray-300 mb-1">{label}</label>

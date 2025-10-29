@@ -1,0 +1,17 @@
+.link {
+    color: #9c9fa3;
+    padding: 8pt;
+    marginleft: 12pt;
+    fontstyle: bold;
+    borderradius: 6px;
+    paddingbottom: 8pt;
+    marginright: 12pt;
+    textalign: left;
+}
+.selected {
+    background-color: #2a2b2f;
+    color: white;
+}
+.link:hover {
+    color: white;
+}

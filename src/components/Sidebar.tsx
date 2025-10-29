@@ -1,50 +1,29 @@
-import logo from "../../public/logo_minimal_no_bg.png";
+import logo from "../assets/logo_minimal_no_bg.png";
+import "../styles/Sidebar.css";
 
 interface Link {
-  title: string;
+  key: string;
   link: string;
 }
 
+interface SidebarProps {
+  selected: string;
+  onSelect: (key: string) => void;
+}
+
 const links: Array<Link> = [
-  {
-    title: "Guilds",
-    link: "#",
-  },
-  {
-    title: "Nitrado Servers",
-    link: "#",
-  },
-  {
-    title: "Guild Config",
-    link: "#",
-  },
-  {
-    title: "Economy",
-    link: "#",
-  },
-  {
-    title: "Alarms",
-    link: "#",
-  },
-  {
-    title: "UAVs",
-    link: "#",
-  },
-  {
-    title: "Events",
-    link: "#",
-  },
-  {
-    title: "Player Map",
-    link: "#",
-  },
-  {
-    title: "Analytics",
-    link: "#",
-  },
+  { key: "Guilds", link: "#" },
+  { key: "Nitrado Servers", link: "#" },
+  { key: "Guild Config", link: "#" },
+  { key: "Economy", link: "#" },
+  { key: "Alarms", link: "#" },
+  { key: "UAVs", link: "#" },
+  { key: "Events", link: "#" },
+  { key: "Player Map", link: "#" },
+  { key: "Analytics", link: "#" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ selected, onSelect }: SidebarProps) {
   return (
     <div
       style={{
@@ -55,6 +34,7 @@ export default function Sidebar() {
         left: "0",
         overflowX: "hidden",
         width: "200px",
+        height: "100vh",
       }}
     >
       <div>
@@ -74,39 +54,19 @@ export default function Sidebar() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "left",
-          height: "100vh",
         }}
       >
-        {links.map((link: Link) => (
+        {links.map((link) => (
           <a
-            style={{
-              padding: "6pt",
-              marginLeft: "12pt",
-              fontStyle: "bold",
-              color: link.title == "Guilds" ? "white" : "#9C9FA3",
-              backgroundColor: link.title == "Guilds" ? "#2a2b2f" : "none",
-              borderRadius: "6px",
-              paddingBottom: "8pt",
-              marginRight: "12pt",
-            }}
+            key={link.key}
             href={link.link}
+            className={selected === link.key ? "link selected" : "link"}
+            onClick={(e) => {
+              e.preventDefault();
+              onSelect(link.key);
+            }}
           >
-            {link.title}
-            {/*{link.title == "Guilds" ? (
-              <span style={{ display: "flex" }}>
-                <div
-                  style={{
-                    left: "0px",
-                    backgroundColor: "#F46A1F",
-                    height: "100%",
-                    width: "2px",
-                  }}
-                ></div>
-                {link.title}
-              </span>
-            ) : (
-              <span>{link.title}</span>
-            )}*/}
+            {link.key}
           </a>
         ))}
       </div>

@@ -30,9 +30,9 @@ export default function NitradoLinker({
       {linked ? (
         <div
           style={{
-            border: "1px solid #333",
+            backgroundColor: "#1A1B1E",
             padding: "15px",
-            borderRadius: "8px",
+            borderRadius: "12px",
           }}
         >
           <p>Your Nitrado account is linked</p>
