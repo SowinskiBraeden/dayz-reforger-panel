@@ -2,17 +2,15 @@ import { useEffect, useState } from "react";
 import api from "../api";
 import type { NitradoUser } from "../types/nitrado";
 import Sidebar from "../components/Sidebar";
-import type { Guild } from "../types/guild";
 import GuildsPage from "./Guilds";
+import GuildConfigPage from "./GuildConfig";
 
 export default function Dashboard() {
   const [selected, setSelected] = useState("Guilds");
   const [user, setUser] = useState<NitradoUser | null>(null);
-  const [guilds, setGuilds] = useState<Guild[]>([]);
-  const [loadingGuilds, setLoadingGuilds] = useState(true);
   const [showLinkedMsg, setShowLinkedMsg] = useState(false);
+  const [activeGuildId, setActiveGuildId] = useState<string | null>(null);
 
-  // Fetch user (and then guilds)
   const fetchUser = async () => {
     try {
       const res = await api.get("/api/auth/me");
@@ -28,23 +26,11 @@ export default function Dashboard() {
       }
 
       // Fetch guilds once user is set
-      fetchGuilds();
+      // fetchGuilds();
     } catch {
       console.log("Bad JWT token");
       localStorage.removeItem("jwt");
       window.location.href = "/login";
-    }
-  };
-
-  const fetchGuilds = async () => {
-    setLoadingGuilds(true);
-    try {
-      const res = await api.get("/api/guilds");
-      setGuilds(res.data.guilds);
-    } catch (err) {
-      console.error("Error fetching guilds:", err);
-    } finally {
-      setLoadingGuilds(false);
     }
   };
 
@@ -67,16 +53,23 @@ export default function Dashboard() {
         return (
           <GuildsPage
             user={user}
-            guilds={guilds}
-            loadingGuilds={loadingGuilds}
             fetchUser={fetchUser}
             showLinkedMsg={showLinkedMsg}
+            openGuildConfig={(guildID: string) => {
+              setActiveGuildId(guildID);
+              setSelected("Guild Config");
+            }}
           />
         );
       case "Nitrado Servers":
         return <div>Placeholder for Nitrado Servers.</div>;
       case "Guild Config":
-        return <div>Placeholder for Guild Config.</div>;
+        return (
+          <GuildConfigPage
+            activeGuildId={activeGuildId}
+            setActiveGuildId={setActiveGuildId}
+          />
+        );
       case "Economy":
         return <div>Placeholder for Economy.</div>;
       case "Alarms":

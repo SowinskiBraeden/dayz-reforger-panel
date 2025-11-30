@@ -75,3 +75,32 @@
     font-size: 0.85rem;
     margin-top: 24pt;
 }
+
+.guild-actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.guild-btn {
+    padding: 6px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.guild-btn.link {
+    background-color: #2d6ef7;
+    color: white;
+}
+
+.guild-btn.config {
+    background-color: #4caf50;
+    color: white;
+}
+
+.guild-btn:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}

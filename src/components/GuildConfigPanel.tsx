@@ -6,7 +6,7 @@ interface GuildConfigProps {
 
 export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
   const server = guildConfig.server || {};
-  const nitrado = guildConfig.Nitrado || {};
+  const nitrado = guildConfig.nitrado || {};
 
   return (
     <div className="bg-neutral-800 text-white rounded-xl p-6 shadow-md space-y-6">
@@ -16,26 +16,40 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
 
       <Section title="General Settings">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <InputField label="Server Name" value={server.serverName} />
-          <InputField label="Server ID" value={server.serverID} disabled />
-          <SwitchField label="Auto Restart" value={server.autoRestart} />
+          <InputField label="Server Name" value={server.server_name} />
+          <InputField label="Guild ID" value={guildConfig.server_id} disabled />
+          <SwitchField label="Auto Restart" value={server.auto_restart} />
           <SwitchField
             label="Show Killfeed Coords"
-            value={server.showKillfeedCoords}
+            value={server.show_killfeed_coords}
           />
           <SwitchField
             label="Show Killfeed Weapon"
-            value={server.showKillfeedWeapon}
+            value={server.show_killfeed_weapons}
           />
         </div>
       </Section>
 
       <Section title="Purchasable Features">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <SwitchField label="Purchase UAV" value={server.purchaseUAV} />
-          <SwitchField label="Purchase EMP" value={server.purchaseEMP} />
-          <InputField label="UAV Price" value={server.uavPrice} type="number" />
-          <InputField label="EMP Price" value={server.empPrice} type="number" />
+          <SwitchField
+            label="Purchase UAV"
+            value={server.enable_purchase_uav}
+          />
+          <SwitchField
+            label="Purchase EMP"
+            value={server.enable_purchase_emp}
+          />
+          <InputField
+            label="UAV Price"
+            value={server.uav_price}
+            type="number"
+          />
+          <InputField
+            label="EMP Price"
+            value={server.emp_price}
+            type="number"
+          />
         </div>
       </Section>
 
@@ -43,23 +57,23 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <SelectField
             label="Killfeed Channel"
-            value={server.killfeedChannel}
-            options={server.allowedChannels}
+            value={server.killfeed_channel}
+            options={server.allowed_command_channels}
           />
           <SelectField
             label="Connection Logs Channel"
-            value={server.connectionLogsChannel}
-            options={server.allowedChannels}
+            value={server.connection_logs_channel}
+            options={server.allowed_command_channels}
           />
           <SelectField
             label="Active Players Channel"
-            value={server.activePlayersChannel}
-            options={server.allowedChannels}
+            value={server.active_players_channels}
+            options={server.allowed_command_channels}
           />
           <SelectField
             label="Welcome Channel"
-            value={server.welcomeChannel}
-            options={server.allowedChannels}
+            value={server.welcome_channel}
+            options={server.allowed_command_channels}
           />
         </div>
       </Section>
@@ -68,12 +82,12 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField
             label="Starting Balance"
-            value={server.startingBalance}
+            value={server.starting_balance}
             type="number"
           />
           <InputField
             label="Income Limiter (Hours)"
-            value={server.incomeLimiter}
+            value={server.income_limiter_hours}
             type="number"
           />
         </div>
@@ -83,10 +97,10 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField
             label="Linked Gamertag Role"
-            value={server.linkedGamertagRole}
+            value={server.linked_gamertag_role}
           />
-          <InputField label="Member Role" value={server.memberRole} />
-          <InputField label="Admin Role" value={server.adminRole} />
+          <InputField label="Member Role" value={server.member_role} />
+          <InputField label="Admin Roles" value={server.bot_admin_roles} />
         </div>
       </Section>
 
@@ -94,7 +108,7 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InputField
             label="Combat Log Timer"
-            value={server.combatLogTimer}
+            value={server.combat_log_timer_minutes}
             type="number"
           />
         </div>
@@ -102,10 +116,10 @@ export default function GuildConfigPanel({ guildConfig }: GuildConfigProps) {
 
       <Section title="Nitrado Info">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <InputField label="Server ID" value={nitrado.ServerID} disabled />
-          <InputField label="User ID" value={nitrado.UserID} disabled />
-          <InputField label="Mission" value={nitrado.Mission} />
-          <InputField label="Status" value={nitrado.Status} />
+          <InputField label="Server ID" value={nitrado.server_id} disabled />
+          <InputField label="User ID" value={nitrado.user_id} disabled />
+          <InputField label="Mission" value={nitrado.mission} />
+          <InputField label="Status" value={nitrado.status} />
         </div>
       </Section>
     </div>

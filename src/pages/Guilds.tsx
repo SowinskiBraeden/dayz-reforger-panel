@@ -1,25 +1,80 @@
-import { useState } from "react";
-import type { NitradoUser } from "../types/nitrado";
+import { useEffect, useState } from "react";
 import type { Guild } from "../types/guild";
-// import GuildConfigPanel from "../components/GuildConfigPanel";
 import NitradoLinker from "../components/NitradoAccount";
 import GuildCard from "../components/GuildCard";
+import api from "../api";
 
 interface GuildsPageProps {
-  user: NitradoUser;
-  guilds: Guild[];
-  loadingGuilds: boolean;
+  user: any;
   fetchUser: () => void;
   showLinkedMsg: boolean;
+  openGuildConfig: (guildID: string) => void;
 }
 
 export default function GuildsPage({
   user,
-  guilds,
-  loadingGuilds,
   fetchUser,
   showLinkedMsg,
+  openGuildConfig,
 }: GuildsPageProps) {
+  const [limitReached, setLimitReached] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [guilds, setGuilds] = useState<Guild[]>([]);
+  const [loadingGuilds, setLoadingGuilds] = useState(true);
+  const [linkedGuildIds, setLinkedGuildIds] = useState<string[]>([]);
+
+  const loadLinkedGuilds = async () => {
+    try {
+      const res = await api.get("/api/guilds/linked");
+      setLinkedGuildIds(res.data.guilds.map((g: any) => g.server_id));
+    } catch (err) {
+      console.error("Failed to fetch linked guilds:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchGuilds();
+    loadLinkedGuilds();
+    setLimitReached(user.used_instances >= user.instance_addons.instance_limit);
+  }, []);
+
+  const handleLinkedSuccess = async () => {
+    setRefreshing(true);
+    await fetchUser(); // updates instance usage
+    await loadLinkedGuilds(); // updates which guilds are linked
+    setRefreshing(false);
+  };
+
+  const fetchGuilds = async () => {
+    setLoadingGuilds(true);
+    try {
+      const res = await api.get("/api/guilds");
+      setGuilds(res.data.guilds);
+    } catch (err) {
+      console.error("Error fetching guilds:", err);
+    } finally {
+      setLoadingGuilds(false);
+    }
+  };
+
+  // Fetch linked guilds and usage info
+  useEffect(() => {
+    fetchGuilds();
+    const fetchLinkedGuilds = async () => {
+      try {
+        const res = await api.get("/api/guilds/linked");
+        if (res.data && Array.isArray(res.data.guilds)) {
+          setLinkedGuildIds(res.data.guilds.map((g: any) => g.server_id));
+        }
+      } catch (err) {
+        console.error("Failed to fetch linked guilds:", err);
+      }
+    };
+
+    fetchLinkedGuilds();
+    setLimitReached(user.used_instances >= user.instance_addons.instance_limit);
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     window.location.href = "/login";
@@ -66,10 +121,12 @@ export default function GuildsPage({
 
       <h2 style={{ marginLeft: "20px" }}>Owned Discord Guilds</h2>
 
-      {loadingGuilds ? (
-        <p style={{ color: "#888" }}>Fetching your servers...</p>
+      {loadingGuilds || refreshing ? (
+        <p style={{ color: "#888", marginLeft: "20px" }}>
+          Fetching your servers...
+        </p>
       ) : guilds.length === 0 ? (
-        <p>No servers found.</p>
+        <p style={{ marginLeft: "20px" }}>No servers found.</p>
       ) : (
         <div
           style={{
@@ -81,7 +138,14 @@ export default function GuildsPage({
           }}
         >
           {guilds.map((g: Guild) => (
-            <GuildCard key={g.id} guild={g} />
+            <GuildCard
+              key={g.id}
+              guild={g}
+              linkedGuildIds={linkedGuildIds}
+              limitReached={limitReached}
+              onLinked={handleLinkedSuccess}
+              openConfig={() => openGuildConfig(g.id)}
+            />
           ))}
         </div>
       )}
